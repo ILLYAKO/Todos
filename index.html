@@ -19,8 +19,8 @@
         <button id="addTaskBtn" type="button" onclick="addTask()">
             Add Task
         </button>
-
         <hr />
+
         <ul id="idUlList"></ul>
 
         <script>
@@ -48,10 +48,20 @@
 
                 tasks.forEach((element) => {
                     stringLi += `<li id=${element.id}>
-                        <input type="checkbox" onchange="changeCheckbox(this, ${element.id});">
-                        <span><strong>${element.name}</strong></span>
-                        <button id="editTaskBtn" type="button" onclick="editTask(this,${element.id})">Edit</button>
-                        <button id="removeTaskBtn" type="button" onclick="removeTask(${element.id})">Remove</button>
+                        <input type="checkbox" ${
+                            element.isChecked ? "checked" : ""
+                        } onchange="changeCheckbox(this, ${element.id});">
+                        <span ${
+                            element.isChecked
+                                ? 'style="text-decoration:line-through;"'
+                                : ""
+                        } ><strong>${element.name}</strong></span>
+                        <button id="editTaskBtn" type="button" onclick="editTask(this,${
+                            element.id
+                        })">Edit</button>
+                        <button id="removeTaskBtn" type="button" onclick="removeTask(${
+                            element.id
+                        })">Remove</button>
                         <hr/>
                         </li> `;
                 });
@@ -69,6 +79,14 @@
                     ? (currentLi.children[1].style.textDecorationLine =
                           "line-through")
                     : (currentLi.children[1].style.textDecorationLine = "");
+
+                tasks = tasks.map((task) =>
+                    task.id !== id
+                        ? task
+                        : { ...task, isChecked: !task.isChecked }
+                );
+
+                console.log("Tasks: " + JSON.stringify(tasks));
             };
 
             const editTask = (element, currentId) => {
