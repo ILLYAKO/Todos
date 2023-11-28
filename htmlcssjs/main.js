@@ -1,4 +1,3 @@
-debugger;
 let tasks = [];
 const ulTasks = document.getElementById("idUlList");
 const todoInput = document.getElementById("todoInput");
