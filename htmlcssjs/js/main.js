@@ -30,9 +30,11 @@ const addTask = () => {
                                 ? 'style="text-decoration:line-through;"'
                                 : ""
                         } ><strong>${element.name}</strong></span>
+                        
                         <button id="editTaskBtn" type="button" onclick="editTask(this,${
                             element.id
                         })">Edit</button>
+
                         <button id="removeTaskBtn" type="button" onclick="removeTask(${
                             element.id
                         })">Remove</button>
