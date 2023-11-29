@@ -1,9 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="import" href="js/addTask.js">
         <style></style>
+
     </head>
     <body>
-        <script></script>
-    </body>
-</html>
+        <form id="addTaskForm">
+            <input id="addTaskInput" type="text" placeholder="Add task!" />
+            <button type="button" onclick="addTask()">Add</button>
+        </form>
+        <div id="tasksList" class="content"></div>
+
+        <script>
+            // import addTask from 'js/addTask.js'
+
+            let tasks = [];
+
+            if(!tasks){
+                console.log("Tasks!!!")
+                renderTasks();
+            } else { console.log("No tasks.")}
+
+            const renderTasks = () => {
+                let tasksList = document.getElementById("tasksList");
+                tasksList.replaceChildren();
+
+                let elementUl = document.createElement("ul");
+                console.log("renders this tasks: " + tasks);
+                tasks.forEach(task => {
+                    let taskNode = document.createTextNode(task);
+                    let elementLi = document.createElement("li");
+                    elementLi.appendChild(taskNode);
+                    elementUl.appendChild(elementLi);                    
+                });
+                tasksList.appendChild(elementUl)
+            }
+
+            // const addTask = ()=> {
+            //     let input = document.querySelector("input#addTaskInput");
+            //     let taskText = input.value;
+            //     if(taskText){
+            //         tasks.unshift(taskText);
+            //         input.value = null;
+            //     }else {
+            //         input.placeholder = "PLEASE ADD TASK!!!" 
+            //     }
+            //     renderTasks();
+            // }
+
+            console.log("Tasks: " + JSON.stringify(tasks))
+        </script>
+    <body>
+</html> 
