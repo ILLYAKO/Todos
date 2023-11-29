@@ -1,4 +1,5 @@
-export default addTask = () => {
+export default  addTask = () => {
+    console.log("main- addTAsk");
     let input = document.querySelector("input#addTaskInput");
     let taskText = input.value;
     if (taskText) {
