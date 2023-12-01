@@ -17,8 +17,11 @@ const deleteTask = (id) => {
     renderList();
 };
 
-const onchangeCheckBox = () => {
-    console.log("onchangeCheckBox");
+const onchangeCheckBox = (id) => {
+    tasks = tasks.map((task) =>
+        task.id !== id ? task : { ...task, completed: !task.completed }
+    );
+    renderList();
 };
 
 const addTask = () => {
@@ -55,12 +58,15 @@ const renderList = () => {
         checkbox.name = "checkboxName";
         checkbox.value = "checkboxValue";
         checkbox.id = "checkboxId";
+        checkbox.className = "checkbox-el";
+        checkbox.onchange = () => onchangeCheckBox(task.id);
 
         let editBtn = document.createElement("button");
         editBtn.type = "button";
         editBtn.name = "editBtnName";
         editBtn.value = "editBtnValue";
         editBtn.id = "editBtnId";
+        editBtn.className = "edit-btn";
         editBtn.onclick = () => editTask();
         editBtn.appendChild(document.createTextNode("Edit"));
 
@@ -69,15 +75,24 @@ const renderList = () => {
         deleteBtn.name = "deleteBtnName";
         deleteBtn.value = "deleteBtnValue";
         deleteBtn.id = "deleteBtnId";
+        deleteBtn.className = "delete-btn";
         deleteBtn.onclick = () => deleteTask(task.id);
         deleteBtn.appendChild(document.createTextNode("Delete"));
+
+        let spanElement = document.createElement("span");
+        spanElement.className = "span-todo";
+        spanElement.appendChild(document.createTextNode(task.todo));
+        !task.completed
+            ? ""
+            : (spanElement.style = "text-decoration: line-through;");
 
         let liElement = document.createElement("li");
         liElement.id = task.id;
         liElement.appendChild(checkbox);
-        liElement.appendChild(document.createTextNode(task.todo));
+        liElement.appendChild(spanElement);
         liElement.appendChild(editBtn);
         liElement.appendChild(deleteBtn);
+        liElement.className = "li-todo";
 
         ulElement.appendChild(liElement);
     });
