@@ -1,25 +1,42 @@
-debugger;
-let localTasks = localStorage.getItem("myTasks");
-let tasks = localTasks ? localTasks.split(",") : [];
-let formElement = document.getElementById("addTaskForm");
-let taskInput = document.getElementById("inputTask");
+// https://dummyjson.com/docs/todos
+
+// const localTasks = localStorage.getItem("myTasks");
+
+// const tasks = localTasks ? localTasks.split(",") : [];
+let tasks = [];
+
+const formElement = document.getElementById("addTaskForm");
+const taskInput = document.getElementById("inputTask");
 
 const editTask = (id) => {
     console.log("Edit");
 };
 
 const deleteTask = (id) => {
-    console.log("Delete");
+    tasks = tasks.filter((task) => task.id !== id);
+    renderList();
+};
+
+const onchangeCheckBox = () => {
+    console.log("onchangeCheckBox");
 };
 
 const addTask = () => {
-    tasks.push(taskInput.value);
+    const newTask = {
+        userId: 12,
+        id: Date.now(),
+        todo: "",
+        completed: false,
+    };
+
+    tasks.push({ ...newTask, todo: taskInput.value });
     taskInput.value = "";
-    localStorage.setItem("myTasks", tasks);
+    // localStorage.setItem("myTasks", tasks);
     renderList();
 };
 
 const renderList = () => {
+    // debugger;
     if (tasks.length == 0) {
         return;
     }
@@ -52,13 +69,13 @@ const renderList = () => {
         deleteBtn.name = "deleteBtnName";
         deleteBtn.value = "deleteBtnValue";
         deleteBtn.id = "deleteBtnId";
-        deleteBtn.onclick = () => deleteTask();
+        deleteBtn.onclick = () => deleteTask(task.id);
         deleteBtn.appendChild(document.createTextNode("Delete"));
 
         let liElement = document.createElement("li");
-        liElement.id = "liElementId";
+        liElement.id = task.id;
         liElement.appendChild(checkbox);
-        liElement.appendChild(document.createTextNode(task));
+        liElement.appendChild(document.createTextNode(task.todo));
         liElement.appendChild(editBtn);
         liElement.appendChild(deleteBtn);
 
@@ -67,3 +84,7 @@ const renderList = () => {
 };
 
 renderList();
+
+// const fakeTodo = fetch("https://dummyjson.com/todos?limit=5&skip=10")
+//     .then((response) => response.json())
+//     .then((json) => console.log(json));
