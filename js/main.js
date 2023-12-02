@@ -1,4 +1,7 @@
 // https://dummyjson.com/docs/todos
+const fakeTodos = fetch("https://dummyjson.com/todos?limit=5&skip=10");
+// .then((response) => response.json());
+// .then((json) => console.log(json));
 
 let tasks = JSON.parse(localStorage.getItem("myTasks") || "[]");
 
@@ -6,22 +9,25 @@ const formElement = document.getElementById("addTaskForm");
 const taskInput = document.getElementById("inputTask");
 const myModal = document.createElement("div");
 
-const showModal = (t) => {
+const saveChange = (t) => {
+    taskText = myModal.firstChild.firstChild.value;
+    tasks = tasks.map((task) => {
+        return task.id !== t.id ? task : { ...task, todo: taskText };
+    });
+    myModal.outerHTML = "";
+    myModal.innerHTML = "";
+    renderList();
+};
+
+const showModal = (task) => {
     const taskInput = document.createElement("input");
-    taskInput.setAttribute("id", "inputTask1");
-    taskInput.setAttribute("type", "text");
-    taskInput.setAttribute("value", t.todo);
+    taskInput.setAttribute("id", "inputEdit");
+    taskInput.value = task.todo;
 
     const btn = document.createElement("button");
     btn.innerHTML = "Save";
     btn.setAttribute("type", "button");
-    btn.onclick = () => {
-        tasks = tasks.map((task) => {
-            return task.id !== t.id ? task : { ...task, todo: taskInput.value };
-        });
-
-        myModal.style.display = "none";
-    };
+    btn.onclick = () => saveChange(task);
 
     const modalContent = document.createElement("div");
     modalContent.className = "modal-content";
@@ -33,19 +39,11 @@ const showModal = (t) => {
     myModal.className = "modal";
     myModal.appendChild(modalContent);
     formElement.insertAdjacentElement("beforebegin", myModal);
+    myModal.style.display = "block";
 };
 
 const editTask = (task) => {
-    // showModal(task);
-    // myModal.style.display = "block";
-
-    // taskText = myModal.firstChild.firstChild.value;
-    // task.todo = taskText;
-    
-    let taskText = prompt("Edit Task:", task.todo);
-    tasks = tasks.map((element) =>
-        element.id !== task.id ? element : { ...element, todo: taskText }
-    );
+    showModal(task);
     renderList();
 };
 
@@ -138,7 +136,3 @@ const renderList = () => {
 };
 
 renderList();
-
-// const fakeTodo = fetch("https://dummyjson.com/todos?limit=5&skip=10")
-//     .then((response) => response.json())
-//     .then((json) => console.log(json));
