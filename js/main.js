@@ -1,9 +1,6 @@
 // https://dummyjson.com/docs/todos
 
-// const localTasks = localStorage.getItem("myTasks");
-
-// const tasks = localTasks ? localTasks.split(",") : [];
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem("myTasks") || "[]");
 
 const formElement = document.getElementById("addTaskForm");
 const taskInput = document.getElementById("inputTask");
@@ -21,6 +18,7 @@ const onchangeCheckBox = (id) => {
     tasks = tasks.map((task) =>
         task.id !== id ? task : { ...task, completed: !task.completed }
     );
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
     renderList();
 };
 
@@ -34,18 +32,16 @@ const addTask = () => {
 
     tasks.push({ ...newTask, todo: taskInput.value });
     taskInput.value = "";
-    // localStorage.setItem("myTasks", tasks);
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
     renderList();
 };
 
 const renderList = () => {
-    // debugger;
-    if (tasks.length == 0) {
-        return;
-    }
-
     if (document.getElementById("ulTasks")) {
         document.getElementById("ulTasks").outerHTML = "";
+    }
+    if (tasks.length == 0) {
+        return;
     }
 
     const ulElement = document.createElement("ul");
@@ -59,6 +55,7 @@ const renderList = () => {
         checkbox.value = "checkboxValue";
         checkbox.id = "checkboxId";
         checkbox.className = "checkbox-el";
+        task.completed ? (checkbox.checked = true) : "";
         checkbox.onchange = () => onchangeCheckBox(task.id);
 
         let editBtn = document.createElement("button");
