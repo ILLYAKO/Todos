@@ -4,9 +4,49 @@ let tasks = JSON.parse(localStorage.getItem("myTasks") || "[]");
 
 const formElement = document.getElementById("addTaskForm");
 const taskInput = document.getElementById("inputTask");
+const myModal = document.createElement("div");
 
-const editTask = (id) => {
-    console.log("Edit");
+const showModal = (t) => {
+    const taskInput = document.createElement("input");
+    taskInput.setAttribute("id", "inputTask1");
+    taskInput.setAttribute("type", "text");
+    taskInput.setAttribute("value", t.todo);
+
+    const btn = document.createElement("button");
+    btn.innerHTML = "Save";
+    btn.setAttribute("type", "button");
+    btn.onclick = () => {
+        tasks = tasks.map((task) => {
+            return task.id !== t.id ? task : { ...task, todo: taskInput.value };
+        });
+
+        myModal.style.display = "none";
+    };
+
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+    modalContent.appendChild(taskInput);
+    modalContent.appendChild(btn);
+
+    // myModal setup
+    myModal.setAttribute("id", "myModal");
+    myModal.className = "modal";
+    myModal.appendChild(modalContent);
+    formElement.insertAdjacentElement("beforebegin", myModal);
+};
+
+const editTask = (task) => {
+    // showModal(task);
+    // myModal.style.display = "block";
+
+    // taskText = myModal.firstChild.firstChild.value;
+    // task.todo = taskText;
+    
+    let taskText = prompt("Edit Task:", task.todo);
+    tasks = tasks.map((element) =>
+        element.id !== task.id ? element : { ...element, todo: taskText }
+    );
+    renderList();
 };
 
 const deleteTask = (id) => {
@@ -18,7 +58,6 @@ const onchangeCheckBox = (id) => {
     tasks = tasks.map((task) =>
         task.id !== id ? task : { ...task, completed: !task.completed }
     );
-    localStorage.setItem("myTasks", JSON.stringify(tasks));
     renderList();
 };
 
@@ -32,7 +71,6 @@ const addTask = () => {
 
     tasks.push({ ...newTask, todo: taskInput.value });
     taskInput.value = "";
-    localStorage.setItem("myTasks", JSON.stringify(tasks));
     renderList();
 };
 
@@ -41,8 +79,11 @@ const renderList = () => {
         document.getElementById("ulTasks").outerHTML = "";
     }
     if (tasks.length == 0) {
+        localStorage.removeItem("myTasks");
         return;
     }
+
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
 
     const ulElement = document.createElement("ul");
     ulElement.setAttribute("id", "ulTasks");
@@ -56,6 +97,7 @@ const renderList = () => {
         checkbox.id = "checkboxId";
         checkbox.className = "checkbox-el";
         task.completed ? (checkbox.checked = true) : "";
+
         checkbox.onchange = () => onchangeCheckBox(task.id);
 
         let editBtn = document.createElement("button");
@@ -64,7 +106,7 @@ const renderList = () => {
         editBtn.value = "editBtnValue";
         editBtn.id = "editBtnId";
         editBtn.className = "edit-btn";
-        editBtn.onclick = () => editTask();
+        editBtn.onclick = () => editTask(task);
         editBtn.appendChild(document.createTextNode("Edit"));
 
         let deleteBtn = document.createElement("button");
