@@ -1,9 +1,20 @@
-// https://dummyjson.com/docs/todos
-const fakeTodos = fetch("https://dummyjson.com/todos?limit=5&skip=10");
-// .then((response) => response.json());
-// .then((json) => console.log(json));
+const loadDumyTodos = async () => {
+    const response = await fetch("https://dummyjson.com/todos?limit=5&skip=1");
+    return response.json();
+};
 
-let tasks = JSON.parse(localStorage.getItem("myTasks") || "[]");
+let isFirstLoad = true;
+const firstFunction = async () => {
+    try {
+        let obj = await loadDumyTodos();
+        let tempArray = obj.todos;
+        return tempArray;
+    } catch (error) {
+        console.log("Error: " + error);
+    }
+};
+
+let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
 
 const formElement = document.getElementById("addTaskForm");
 const taskInput = document.getElementById("inputTask");
@@ -53,28 +64,47 @@ const deleteTask = (id) => {
 };
 
 const onchangeCheckBox = (id) => {
-    tasks = tasks.map((task) =>
-        task.id !== id ? task : { ...task, completed: !task.completed }
-    );
+    let tempItem = null;
+    let index = null;
+
+    tasks.forEach((element, i) => {
+        if (element.id === id) {
+            tempItem = { ...element, completed: !element.completed };
+            index = i;
+        }
+    });
+
+    tasks.splice(index, 1);
+    tasks.push(tempItem);
+
     renderList();
 };
 
 const addTask = () => {
+    if (taskInput.value === "") {
+        taskInput.placeholder = "PLEASE INSERT TASK!!!";
+        return;
+    }
     const newTask = {
-        userId: 12,
         id: Date.now(),
         todo: "",
         completed: false,
+        userId: 12,
     };
 
     tasks.push({ ...newTask, todo: taskInput.value });
     taskInput.value = "";
+    taskInput.placeholder = 'Add task here.';
     renderList();
 };
 
-const renderList = () => {
+const renderList = async () => {
     if (document.getElementById("ulTasks")) {
         document.getElementById("ulTasks").outerHTML = "";
+    }
+    if (isFirstLoad) {
+        tasks = await firstFunction();
+        isFirstLoad = !isFirstLoad;
     }
     if (tasks.length == 0) {
         localStorage.removeItem("myTasks");
