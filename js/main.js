@@ -1,19 +1,3 @@
-const loadDumyTodos = async () => {
-    const response = await fetch("https://dummyjson.com/todos?limit=5&skip=1");
-    return response.json();
-};
-
-let isFirstLoad = true;
-const firstFunction = async () => {
-    try {
-        let obj = await loadDumyTodos();
-        let tempArray = obj.todos;
-        return tempArray;
-    } catch (error) {
-        console.log("Error: " + error);
-    }
-};
-
 let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
 
 const formElement = document.getElementById("addTaskForm");
@@ -45,7 +29,6 @@ const showModal = (task) => {
     modalContent.appendChild(taskInput);
     modalContent.appendChild(btn);
 
-    // myModal setup
     myModal.setAttribute("id", "myModal");
     myModal.className = "modal";
     myModal.appendChild(modalContent);
@@ -94,7 +77,7 @@ const addTask = () => {
 
     tasks.push({ ...newTask, todo: taskInput.value });
     taskInput.value = "";
-    taskInput.placeholder = 'Add task here.';
+    taskInput.placeholder = "Add task here.";
     renderList();
 };
 
@@ -102,10 +85,7 @@ const renderList = async () => {
     if (document.getElementById("ulTasks")) {
         document.getElementById("ulTasks").outerHTML = "";
     }
-    if (isFirstLoad) {
-        tasks = await firstFunction();
-        isFirstLoad = !isFirstLoad;
-    }
+
     if (tasks.length == 0) {
         localStorage.removeItem("myTasks");
         return;
