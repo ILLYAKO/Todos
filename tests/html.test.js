@@ -24,38 +24,44 @@ const dom = new JSDOM(html);
 global.document = dom.window.document;
 
 // Include JavaScript file
-require("../js/main.js");
+const {
+    addTask,
+} = require("../js/main.js");
 
-// test
-test("Check the presence of page title", () => {
-    const title = document.title;
-    expect(title).toBeDefined();
-    expect(title).toContain("Todo");
-});
+describe("Test Todo App index.js", () => {
+    test("Check the presence of page title", () => {
+        const title = document.title;
+        expect(title).toBeDefined();
+        expect(title).toContain("Todo");
+    });
 
-test("Check the presence of Todo List heading", () => {
-    const h3Element = document.querySelector("h3");
-    expect(h3Element.textContent).toBe("Todo List");
-});
+    test("Check the presence of Todo List heading", () => {
+        const h3Element = document.querySelector("h3");
+        expect(h3Element.textContent).toBe("Todo List");
+    });
 
-test("Check the presence of input task form", () => {
-    const formElement = document.getElementById("addTaskForm");
-    expect(formElement).toBeInTheDocument();
-});
+    test("Check the presence of input task form", () => {
+        const formElement = document.getElementById("addTaskForm");
+        expect(formElement).toBeInTheDocument();
+    });
 
-test("Check the presence of input field", () => {
-    const inputNewTodo = document.getElementById("inputTask");
-    expect(inputNewTodo).toBeInTheDocument();
-    expect(inputNewTodo).toHaveAttribute("type", "text");
-    expect(inputNewTodo).toHaveValue("");
-    expect(inputNewTodo.placeholder).toBe("Add task here.");
-});
+    test("Check the presence of input field", () => {
+        const inputNewTodo = document.getElementById("inputTask");
+        expect(inputNewTodo).toBeInTheDocument();
+        expect(inputNewTodo).toHaveAttribute("type", "text");
+        expect(inputNewTodo).toHaveValue("");
+        expect(inputNewTodo.placeholder).toBe("Add task here.");
+    });
 
-test("Check the presence of button in form", () => {
-    const buttonAddTask = document.getElementsByTagName("button")[0];
-    expect(buttonAddTask).toBeInTheDocument();
-    expect(buttonAddTask).toHaveAttribute("type", "button");
-    expect(buttonAddTask).toHaveAttribute("onclick", "addTask()");
-    expect(buttonAddTask.onclick).toBeDefined();
-    expect(buttonAddTask.textContent).toBe("Add Task");
+    test("Check the presence of button in form", async () => {
+        const buttonAddTask = document.getElementsByTagName("button")[0];
+        buttonAddTask.onclick = addTask;
+        expect(buttonAddTask).toBeInTheDocument();
+        expect(buttonAddTask).toHaveAttribute("type", "button");
+        expect(buttonAddTask).toHaveAttribute("onclick", "addTask()");
+        expect(buttonAddTask.onclick).toBeDefined();
+        expect(buttonAddTask.textContent).toBe("Add Task");
+        expect(buttonAddTask.onclick).toEqual(expect.any(Function));
+        expect(buttonAddTask.onclick).toBe(addTask);
+    });
 });

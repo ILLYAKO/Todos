@@ -81,7 +81,7 @@ const addTask = () => {
     renderList();
 };
 
-const renderList = async () => {
+const renderList = () => {
     if (document.getElementById("ulTasks")) {
         document.getElementById("ulTasks").outerHTML = "";
     }
@@ -146,3 +146,13 @@ const renderList = async () => {
 };
 
 renderList();
+
+module.exports = {
+    saveChange,
+    showModal,
+    editTask,
+    deleteTask,
+    onchangeCheckBox,
+    addTask,
+    renderList,
+};
