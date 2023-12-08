@@ -10,6 +10,7 @@ const html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
 const dom = new JSDOM(html);
 global.document = dom.window.document;
 global.window = dom.window;
+
 // Mock localStorage
 const mockLocalStorage = {
     getItem: jest.fn((key) => {
@@ -32,7 +33,7 @@ const {
     onchangeCheckBox,
     addTask,
     renderList,
-} = require("../js/main.js"); // Assuming your main script is in a file named 'app.js'
+} = require("../js/main.js");
 
 describe("Test Todo App js/main.js", () => {
     let tasks;
@@ -72,9 +73,6 @@ describe("Test Todo App js/main.js", () => {
         // Your test logic here for the renderList function
     });
     test("should render an empty task list", () => {
-        // Mocking tasks to be an empty array
-        const tasks = [];
-
         // Calling the renderList function
         renderList();
 
@@ -83,27 +81,4 @@ describe("Test Todo App js/main.js", () => {
         expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
         expect(document.getElementById("ulTasks")).toBeNull();
     });
-
-    // test("should render a task list with one task", () => {
-    //     // Mocking tasks with one task
-    //     const tasks = [
-    //         {
-    //             id: 1,
-    //             todo: "Example Task",
-    //             completed: false,
-    //             userId: 12,
-    //         },
-    //     ];
-
-    //     // Calling the renderList function
-    //     renderList();
-
-    //     // Expectations
-    //     expect(localStorageMock.removeItem).not.toHaveBeenCalled();
-    //     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-    //         "myTasks",
-    //         JSON.stringify(tasks)
-    //     );
-    //     expect(document.getElementById("ulTasks")).not.toBeNull();
-    // });
 });
