@@ -24,9 +24,7 @@ const dom = new JSDOM(html);
 global.document = dom.window.document;
 
 // Include JavaScript file
-const {
-    addTask,
-} = require("../js/main.js");
+const { addTask } = require("../js/main.js");
 
 describe("Test Todo App index.js", () => {
     test("Check the presence of page title", () => {
@@ -53,15 +51,18 @@ describe("Test Todo App index.js", () => {
         expect(inputNewTodo.placeholder).toBe("Add task here.");
     });
 
-    test("Check the presence of button in form", async () => {
-        const buttonAddTask = document.getElementsByTagName("button")[0];
-        buttonAddTask.onclick = addTask;
+    test("Check the presence of button in form", () => {
+        const buttonAddTask = document.getElementById("addTaskButton");
         expect(buttonAddTask).toBeInTheDocument();
         expect(buttonAddTask).toHaveAttribute("type", "button");
-        expect(buttonAddTask).toHaveAttribute("onclick", "addTask()");
-        expect(buttonAddTask.onclick).toBeDefined();
-        expect(buttonAddTask.textContent).toBe("Add Task");
-        expect(buttonAddTask.onclick).toEqual(expect.any(Function));
-        expect(buttonAddTask.onclick).toBe(addTask);
+    });
+
+    test("Check the presence of script in form", () => {
+        const scriptElement = document.querySelector(
+            'script[src="./js/main.js"]'
+        );
+        // Assert that the script tag is present
+        expect(scriptElement).not.toBeNull();
+        expect(scriptElement).toBeInTheDocument();
     });
 });

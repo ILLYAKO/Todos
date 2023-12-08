@@ -3,6 +3,13 @@ const path = require("path");
 const { JSDOM } = require("jsdom");
 require("@testing-library/jest-dom");
 
+// Read the HTML file content
+const html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
+
+// Set up a fake DOM environment
+const dom = new JSDOM(html);
+global.document = dom.window.document;
+global.window = dom.window;
 // Mock localStorage
 const mockLocalStorage = {
     getItem: jest.fn((key) => {
@@ -11,16 +18,10 @@ const mockLocalStorage = {
             : null; // default value for "myTasks"
     }),
     setItem: jest.fn(),
+    removeItem: jest.fn(),
     clear: jest.fn(),
 };
 global.localStorage = mockLocalStorage;
-
-// Read the HTML file content
-const html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
-
-// Set up a fake DOM environment
-const dom = new JSDOM(html);
-global.document = dom.window.document;
 
 // Import the functions to be tested
 const {
@@ -41,16 +42,10 @@ describe("Test Todo App js/main.js", () => {
         tasks = [];
     });
 
+    afterEach(() => {});
+
     test("saveChange function updates task text", () => {
-        console.log(typeof saveChange);
-        // // Call saveChange with a task
-        // saveChange({ id: 12, todo: "Task 1", completed: false, userId: 12 });
-        // // Assertions
-        // // For example, you might check if tasks were updated and renderList was called
-        // expect(tasks).toEqual(
-        //     expect.arrayContaining([{ id: 12, todo: expect.any(String) }])
-        // );
-        // You should add more specific assertions based on your actual code
+        console.log("saveChange()");
     });
 
     test("showModal displays modal with task input", () => {
@@ -76,4 +71,39 @@ describe("Test Todo App js/main.js", () => {
     test("renderList updates the DOM with tasks", () => {
         // Your test logic here for the renderList function
     });
+    test("should render an empty task list", () => {
+        // Mocking tasks to be an empty array
+        const tasks = [];
+
+        // Calling the renderList function
+        renderList();
+
+        // Expectations
+        expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("myTasks");
+        expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
+        expect(document.getElementById("ulTasks")).toBeNull();
+    });
+
+    // test("should render a task list with one task", () => {
+    //     // Mocking tasks with one task
+    //     const tasks = [
+    //         {
+    //             id: 1,
+    //             todo: "Example Task",
+    //             completed: false,
+    //             userId: 12,
+    //         },
+    //     ];
+
+    //     // Calling the renderList function
+    //     renderList();
+
+    //     // Expectations
+    //     expect(localStorageMock.removeItem).not.toHaveBeenCalled();
+    //     expect(localStorageMock.setItem).toHaveBeenCalledWith(
+    //         "myTasks",
+    //         JSON.stringify(tasks)
+    //     );
+    //     expect(document.getElementById("ulTasks")).not.toBeNull();
+    // });
 });

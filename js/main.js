@@ -3,18 +3,23 @@ let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
 const formElement = document.getElementById("addTaskForm");
 const taskInput = document.getElementById("inputTask");
 const myModal = document.createElement("div");
+const addTaskButton = document.getElementById("addTaskButton");
 
-const saveChange = (t) => {
+addTaskButton.addEventListener("click", () => addTask(tasks));
+
+const saveChange = (tasks, id) => {
     taskText = myModal.firstChild.firstChild.value;
-    tasks = tasks.map((task) => {
-        return task.id !== t.id ? task : { ...task, todo: taskText };
+    tasks = tasks.map((item) => {
+        return item.id !== id ? item : { item, todo: taskText };
     });
     myModal.outerHTML = "";
     myModal.innerHTML = "";
-    renderList();
+
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
+    renderList(tasks);
 };
 
-const showModal = (task) => {
+const showModal = (tasks, task) => {
     const taskInput = document.createElement("input");
     taskInput.setAttribute("id", "inputEdit");
     taskInput.value = task.todo;
@@ -22,7 +27,7 @@ const showModal = (task) => {
     const btn = document.createElement("button");
     btn.innerHTML = "Save";
     btn.setAttribute("type", "button");
-    btn.onclick = () => saveChange(task);
+    btn.onclick = () => saveChange(tasks, task.id);
 
     const modalContent = document.createElement("div");
     modalContent.className = "modal-content";
@@ -36,17 +41,22 @@ const showModal = (task) => {
     myModal.style.display = "block";
 };
 
-const editTask = (task) => {
-    showModal(task);
-    renderList();
+const editTask = (tasks, task) => {
+    showModal(tasks, task);
+
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
+    renderList(tasks);
 };
 
-const deleteTask = (id) => {
+const deleteTask = (tasks, id) => {
     tasks = tasks.filter((task) => task.id !== id);
-    renderList();
+
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
+    renderList(tasks);
 };
 
-const onchangeCheckBox = (id) => {
+const onchangeCheckBox = (tasks, id) => {
+    debugger;
     let tempItem = null;
     let index = null;
 
@@ -60,10 +70,11 @@ const onchangeCheckBox = (id) => {
     tasks.splice(index, 1);
     tasks.push(tempItem);
 
-    renderList();
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
+    renderList(tasks);
 };
 
-const addTask = () => {
+const addTask = (tasks) => {
     if (taskInput.value === "") {
         taskInput.placeholder = "PLEASE INSERT TASK!!!";
         return;
@@ -78,10 +89,11 @@ const addTask = () => {
     tasks.push({ ...newTask, todo: taskInput.value });
     taskInput.value = "";
     taskInput.placeholder = "Add task here.";
-    renderList();
+    localStorage.setItem("myTasks", JSON.stringify(tasks));
+    renderList(tasks);
 };
 
-const renderList = () => {
+const renderList = (tasks) => {
     if (document.getElementById("ulTasks")) {
         document.getElementById("ulTasks").outerHTML = "";
     }
@@ -90,8 +102,6 @@ const renderList = () => {
         localStorage.removeItem("myTasks");
         return;
     }
-
-    localStorage.setItem("myTasks", JSON.stringify(tasks));
 
     const ulElement = document.createElement("ul");
     ulElement.setAttribute("id", "ulTasks");
@@ -106,7 +116,7 @@ const renderList = () => {
         checkbox.className = "checkbox-el";
         task.completed ? (checkbox.checked = true) : "";
 
-        checkbox.onchange = () => onchangeCheckBox(task.id);
+        checkbox.onchange = () => onchangeCheckBox(tasks, task.id);
 
         let editBtn = document.createElement("button");
         editBtn.type = "button";
@@ -114,7 +124,7 @@ const renderList = () => {
         editBtn.value = "editBtnValue";
         editBtn.id = "editBtnId";
         editBtn.className = "edit-btn";
-        editBtn.onclick = () => editTask(task);
+        editBtn.onclick = () => editTask(tasks, task);
         editBtn.appendChild(document.createTextNode("Edit"));
 
         let deleteBtn = document.createElement("button");
@@ -123,7 +133,7 @@ const renderList = () => {
         deleteBtn.value = "deleteBtnValue";
         deleteBtn.id = "deleteBtnId";
         deleteBtn.className = "delete-btn";
-        deleteBtn.onclick = () => deleteTask(task.id);
+        deleteBtn.onclick = () => deleteTask(tasks, task.id);
         deleteBtn.appendChild(document.createTextNode("Delete"));
 
         let spanElement = document.createElement("span");
@@ -145,7 +155,7 @@ const renderList = () => {
     });
 };
 
-renderList();
+renderList(tasks);
 
 module.exports = {
     saveChange,
