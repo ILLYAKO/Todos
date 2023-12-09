@@ -3,27 +3,12 @@ const path = require("path");
 const { JSDOM } = require("jsdom");
 require("@testing-library/jest-dom");
 
-// Mock localStorage
-const mockLocalStorage = {
-    getItem: jest.fn((key) => {
-        return key === "myTasks"
-            ? `[{"id":1701651117090,"todo":"Task 1","completed":false,"userId":12},{"id":1701651120147,"todo":"Task 2","completed":false,"userId":12}]`
-            : null; // default value for "myTasks"
-    }),
-    setItem: jest.fn(),
-    clear: jest.fn(),
-};
-global.localStorage = mockLocalStorage;
-
 // Read the HTML file content
 const html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
 
 // Set up a fake DOM environment
 const dom = new JSDOM(html);
 global.document = dom.window.document;
-
-// Include JavaScript file
-const { addTask } = require("../js/main.js");
 
 describe("Test Todo App index.js", () => {
     test("Check the presence of page title", () => {
@@ -60,7 +45,6 @@ describe("Test Todo App index.js", () => {
         const scriptElement = document.querySelector(
             'script[src="./js/main.js"]'
         );
-        // Assert that the script tag is present
         expect(scriptElement).not.toBeNull();
         expect(scriptElement).toBeInTheDocument();
     });
