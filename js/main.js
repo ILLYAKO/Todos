@@ -1,4 +1,8 @@
-let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
+let tasks = [];
+
+if (typeof localStorage !== "undefined") {
+    tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
+}
 
 const formElement = document.getElementById("addTaskForm");
 const taskInput = document.getElementById("inputTask");

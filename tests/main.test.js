@@ -12,13 +12,14 @@ global.document = dom.window.document;
 global.window = dom.window;
 
 // Mock localStorage
-const mockLocalStorage = {
+mockLocalStorage = {
     getItem: jest.fn((key) => {
         return key === "myTasks"
             ? `[{"id":1701651117090,"todo":"Task 1","completed":false,"userId":12},{"id":1701651120147,"todo":"Task 2","completed":false,"userId":12}]`
             : null; // default value for "myTasks"
     }),
     setItem: jest.fn(),
+    // (keyName, keyValue) => {return `${keyName}, ${keyValue}`;}
     removeItem: jest.fn(),
     clear: jest.fn(),
 };
@@ -41,13 +42,15 @@ describe("Test Todo App js/main.js", () => {
     beforeEach(() => {
         // Reset tasks before each test
         tasks = [];
+        // // Check if localStorage is available (e.g., in a browser or JSDOM environment)
+        // if (typeof localStorage !== "undefined") {
+        //     tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
+        // }
     });
 
     afterEach(() => {});
 
-    test("saveChange function updates task text", () => {
-        console.log("saveChange()");
-    });
+    test("saveChange function updates task text", () => {});
 
     test("showModal displays modal with task input", () => {
         // Your test logic here for the showModal function
@@ -70,11 +73,45 @@ describe("Test Todo App js/main.js", () => {
     });
 
     test("renderList updates the DOM with tasks", () => {
-        // Your test logic here for the renderList function
+        // Mocking tasks with one task
+        const tasks = [
+            {
+                id: 1,
+                todo: "Example Task",
+                completed: false,
+                userId: 12,
+            },
+        ];
+        // Calling the renderList function with tasks
+        renderList(tasks);
+
+        // Check that ulTasks element is present in the DOM
+        const ulElement = document.getElementById("ulTasks");
+        expect(ulElement).not.toBeNull();
+
+        // Verify that the list contains the rendered task
+        const liElement = document.getElementById(String(tasks[0].id));
+        expect(liElement).not.toBeNull();
+        expect(liElement.tagName.toLowerCase()).toBe("li");
+        expect(liElement.childElementCount).toBe(4);
+        // Check input checkbox
+        expect(liElement.children[0].tagName.toLowerCase()).toBe("input");
+        expect(liElement.children[0]).toHaveAttribute("type", "checkbox");
+        // Check span
+        expect(liElement.children[1].tagName.toLowerCase()).toBe("span");
+        // Check button Edit
+        expect(liElement.children[2].tagName.toLowerCase()).toBe("button");
+        expect(typeof liElement.children[2].onclick).toBe("function");
+        expect(liElement.children[2].textContent).toBe("Edit");
+        // Check button Delete
+        expect(liElement.children[3].tagName.toLowerCase()).toBe("button");
+        expect(typeof liElement.children[3].onclick).toBe("function");
+        expect(liElement.children[3].textContent).toBe("Delete");
     });
+
     test("should render an empty task list", () => {
         // Calling the renderList function
-        renderList();
+        renderList(tasks);
 
         // Expectations
         expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("myTasks");
