@@ -19,7 +19,6 @@ mockLocalStorage = {
             : null; // default value for "myTasks"
     }),
     setItem: jest.fn(),
-    // (keyName, keyValue) => {return `${keyName}, ${keyValue}`;}
     removeItem: jest.fn(),
     clear: jest.fn(),
 };
@@ -42,10 +41,6 @@ describe("Test Todo App js/main.js", () => {
     beforeEach(() => {
         // Reset tasks before each test
         tasks = [];
-        // // Check if localStorage is available (e.g., in a browser or JSDOM environment)
-        // if (typeof localStorage !== "undefined") {
-        //     tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
-        // }
     });
 
     afterEach(() => {});
@@ -70,6 +65,7 @@ describe("Test Todo App js/main.js", () => {
 
     test("addTask adds a new task and calls renderList", () => {
         // Your test logic here for the addTask function
+
     });
 
     test("renderList updates the DOM with tasks", () => {
@@ -112,8 +108,6 @@ describe("Test Todo App js/main.js", () => {
     test("should render an empty task list", () => {
         // Calling the renderList function
         renderList(tasks);
-
-        // Expectations
         expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("myTasks");
         expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
         expect(document.getElementById("ulTasks")).toBeNull();
