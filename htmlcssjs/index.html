@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" href="images/favicon.png" />
+        <link rel="stylesheet" href="css/index.css" />
+    </head>
+    <body>
+        <header>My Todo</header>
+        <div>
+            <label for="todoInput"> New Task:</label>
+            <input
+                type="text"
+                name="todoInput"
+                id="todoInput"
+                placeholder="Input a new task."
+                value=""
+            />
+            <button id="addTaskBtn" type="button" onclick="addTask()">
+                Add Task
+            </button>
+            <hr />
+        </div>
+        <div>
+            <ul id="idUlList"></ul>
+        </div>
+        <footer>Footer</footer>
+
+        <script src="js/main.js"></script>
+    </body>
+</html>
